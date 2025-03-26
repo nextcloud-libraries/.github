@@ -9,6 +9,14 @@ SPDX-License-Identifier: MIT
 
 When creating a new workflow on your repository, you will see templates originating from here.
 
+## Auto-update repositories
+For each template, you can propagate them on all the repos that use it.
+
+1. Go into https://github.com/nextcloud-libraries/.github/actions/workflows/dispatch-workflow.yml
+2. Enter the name of the workflow you want to dispatch
+3. Enter the page you want to execute (100 are done per page, so check the [number of repositories](https://github.com/orgs/nextcloud-libraries/repositories))
+4. Wait for the actions to finish and see the checkout the pull requests
+
 ## Update workflows with a script
 
 You can run the following shell script on your machine to update all workflows of an app. It should be run inside the cloned repository of an app and requires rsync to be installed.
