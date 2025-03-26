@@ -1,0 +1,10 @@
+{
+	"name": "Playwright testing",
+	"description": "Default Playwright workflow. It will setup node, install dependencies, run Playwright and upload artifacts.",
+	"iconName": "playwright",
+	"filePatterns": [
+		"^playwright.config.js$",
+		"^playwright.config.mjs$",
+		"^playwright.config.ts$"
+	]
+}
