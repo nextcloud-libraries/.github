@@ -23,13 +23,10 @@ jobs:
         shardIndex: [1, 2]
         shardTotal: [2]
 
-    outputs:
-      nodeVersion: ${{ steps.versions.outputs.nodeVersion }}
-
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up node ${{ steps.versions.outputs.nodeVersion }}
+    - name: Set up node}
       uses: actions/setup-node@v4
       with:
         node-version-file: 'package.json'
@@ -61,7 +58,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
-        node-version: ${{ needs.playwright-tests.outputs.nodeVersion }}
+        node-version-file: 'package.json'
 
     - name: Install dependencies
       run: npm ci
