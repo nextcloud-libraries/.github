@@ -60,20 +60,10 @@ jobs:
         if: steps.check_composer.outputs.files_exists == 'true'
         run: composer install --no-dev
 
-      - name: Read package.json node and npm engines version
-        uses: skjnldsv/read-package-engines-version-actions@06d6baf7d8f41934ab630e97d9e6c0bc9c9ac5e4 # v3
-        id: versions
-        with:
-          fallbackNode: "^20"
-          fallbackNpm: "^10"
-
       - name: Set up node ${{ steps.versions.outputs.nodeVersion }}
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e # v4.3.0
         with:
-          node-version: ${{ steps.versions.outputs.nodeVersion }}
-
-      - name: Set up npm ${{ steps.versions.outputs.npmVersion }}
-        run: npm i -g 'npm@${{ steps.versions.outputs.npmVersion }}'
+          node-version-file: 'package.json'
 
       - name: Install node dependencies & build app
         run: |
