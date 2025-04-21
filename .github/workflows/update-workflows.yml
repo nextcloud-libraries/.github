@@ -37,7 +37,9 @@ jobs:
       - name: Merge upstream
         id: merge
         run: |
-          git merge --no-commit --no-ff -Xours 'upstream/${{ env.GIT_BRANCH }}' || true
+          if (git merge --no-commit --no-ff -Xours 'upstream/${{ env.GIT_BRANCH }}' || echo 'conflicts') | grep 'Already up to date' ; then
+            exit 0
+          fi
           echo "trying to remove files deleted by us..."
           git diff --name-only --diff-filter=DU | xargs git rm
           # only sync workflow templates and the repo workflows
@@ -47,11 +49,10 @@ jobs:
           GIT_BRANCH: master
 
       - name: Check changes
-        if: steps.merge.outcome == 'success'
-        continue-on-error: true
         id: changes
+        continue-on-error: true
         run: |
-          git status -uno | grep -v 'branch is ahead of'
+          git status -uno | grep 'branch is ahead of'
 
       - name: Create Pull Request
         if: steps.merge.outcome == 'success' && steps.changes.outcome == 'success'
@@ -70,7 +71,7 @@ jobs:
             3. to review
 
       - name: Raise on issue on failure
-        if: steps.pull-request.outcome == 'failure' || steps.merge.outcome == 'failure'
+        if: failure() && (steps.pull-request.outcome == 'failure' || steps.merge.outcome == 'failure')
         uses: dacbd/create-issue-action@cdb57ab6ff8862aa09fee2be6ba77a59581921c2 # v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -78,6 +79,6 @@ jobs:
           body: 'Please check the output of the GitHub action and manually merge the latest changes<br>${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}<br>${{ steps.codeowners.outputs.codeowners }}'
 
       - name: Summary
-        if: steps.changes.outcome == 'failure'
+        if: failure() && steps.changes.outcome == 'failure'
         run: |
           echo "No changes detected."
