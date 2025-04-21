@@ -3,7 +3,10 @@
 
 name: Sync workflows with Nextcloud
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 18 * * 0"
 
 permissions:
   contents: read
