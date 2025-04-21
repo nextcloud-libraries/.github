@@ -1,0 +1,5 @@
+{
+	"name": "Update translations command",
+	"description": "Extract translations and commits them onto the current pull request.",
+	"iconName": "octicon accessibility"
+}
