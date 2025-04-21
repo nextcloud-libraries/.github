@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: 2025 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: MIT
+
+name: Sync workflows with Nextcloud
+
+on: workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  sync-workflows:
+    name: Sync workflows
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup git
+        run: |
+          git config --local user.email "nextcloud-command@users.noreply.github.com"
+          git config --local user.name "nextcloud-command"
+          git remote add upstream '${{ env.GIT_UPSTREAM }}'
+          git fetch upstream
+        env:
+          GIT_UPSTREAM: https://github.com/nextcloud/.github.git
+
+      - name: Merge upstream
+        id: merge
+        run: |
+          git merge --no-commit --no-ff -Xours 'upstream/${{ env.GIT_BRANCH }}' || true
+          echo "trying to remove files deleted by us..."
+          git diff --name-only --diff-filter=DU | xargs git rm
+          # only sync workflow templates and the repo workflows
+          git status --porcelain | cut -c4- | grep -vP "(workflow-templates|.github/workflows)" | xargs -r git checkout HEAD
+          git commit -sm 'chore: merge updated from Nextcloud organization'
+        env:
+          GIT_BRANCH: master
+
+      - name: Check changes
+        if: steps.merge.outcome == 'success'
+        continue-on-error: true
+        id: changes
+        run: |
+          git status -uno | grep -v 'branch is ahead of'
+
+      - name: Create Pull Request
+        if: steps.merge.outcome == 'success' && steps.changes.outcome == 'success'
+        id: pull-request
+        continue-on-error: true
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          token: ${{ secrets.SYNC_TOKEN }}
+          commit-message: 'chore: update workflows from Nextcloud organization'
+          committer: GitHub <noreply@github.com>
+          author: nextcloud-command <nextcloud-command@users.noreply.github.com>
+          signoff: true
+          branch: automated/sync-workflows
+          title: 'chore: sync workflows from Nextcloud organization'
+          labels: |
+            3. to review
+
+      - name: Raise on issue on failure
+        if: steps.pull-request.outcome == 'failure' || steps.merge.outcome == 'failure'
+        uses: dacbd/create-issue-action@cdb57ab6ff8862aa09fee2be6ba77a59581921c2 # v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'Failed to sync workflows'
+          body: 'Please check the output of the GitHub action and manually merge the latest changes<br>${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}<br>${{ steps.codeowners.outputs.codeowners }}'
+
+      - name: Summary
+        if: steps.changes.outcome == 'failure'
+        run: |
+          echo "No changes detected."
