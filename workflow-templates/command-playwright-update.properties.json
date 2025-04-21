@@ -1,0 +1,10 @@
+{
+	"name": "Update playwright snapshots command",
+    "description": "Update playwright test snapshots on a pull request using '/playwright-update' command.",
+	"iconName": "playwright",
+	"filePatterns": [
+		"^playwright.config.js$",
+		"^playwright.config.mjs$",
+		"^playwright.config.ts$"
+	]
+}
