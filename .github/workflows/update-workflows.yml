@@ -44,7 +44,7 @@ jobs:
             exit 0
           fi
           echo "trying to remove files deleted by us..."
-          git diff --name-only --diff-filter=DU | xargs git rm
+          git diff --name-only --diff-filter=DU | xargs -r git rm
           # only sync workflow templates and the repo workflows
           git status --porcelain | cut -c4- | grep -vP "(workflow-templates|.github/workflows)" | xargs -r git checkout HEAD
           git commit -sm 'chore: merge updated from Nextcloud organization'
