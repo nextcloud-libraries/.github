@@ -4,7 +4,9 @@
 #
 # SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
 # SPDX-License-Identifier: MIT
+
 name: Update workflows for specific repository
+
 on:
   workflow_dispatch:
     inputs:
@@ -17,29 +19,36 @@ on:
         required: true
         type: string
         default: 'main'
+
 permissions:
   contents: read
+
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+
     name: Update all workflows in ${{ github.event.inputs.repository }}
+
     steps:
       - name: Check actor permission
         uses: skjnldsv/check-actor-permission@69e92a3c4711150929bca9fcf34448c5bf5526e7 # v3.0
         with:
           require: admin
+
       - name: Checkout target repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           path: target
           repository: ${{ github.repository_owner }}/${{ github.event.inputs.repository }}
           ref: ${{ github.event.inputs.branch }}
-          token: ${{ secrets.TEMPLATE_WORKFLOW_DISPATCH_PAT }}
+
       - name: Checkout source repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           path: source
+
       - name: Copy all workflow templates
         run: |
           for workflow in ./source/workflow-templates/*.yml; do
@@ -56,6 +65,7 @@ jobs:
               fi
             fi
           done
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
