@@ -68,7 +68,7 @@ jobs:
           TESTING=true npm run build --if-present
 
       - name: Save context
-        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           key: cypress-context-${{ github.run_id }}
           path: ./
@@ -88,7 +88,7 @@ jobs:
 
     steps:
       - name: Restore context
-        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           fail-on-cache-miss: true
           key: cypress-context-${{ github.run_id }}
@@ -109,14 +109,14 @@ jobs:
       - name: Run ${{ startsWith(matrix.containers, 'component') && 'component' || 'E2E' }} cypress tests
         uses: cypress-io/github-action@4c06c48f3ffea349b7189aa06dfcda47a9fa7b92 # v7.1.8
         with:
-          record: ${{ secrets.CYPRESS_RECORD_KEY && true }} # zizmor: ignore[secrets-outside-env]
-          parallel: ${{ secrets.CYPRESS_RECORD_KEY && true }} # zizmor: ignore[secrets-outside-env]
+          record: ${{ secrets.CYPRESS_RECORD_KEY && true }}
+          parallel: ${{ secrets.CYPRESS_RECORD_KEY && true }}
           # cypress run type
           component: ${{ startsWith(matrix.containers, 'component') }}
           group: ${{ secrets.CYPRESS_RECORD_KEY && env.CYPRESS_GROUP }}
           # cypress env
-          ci-build-id: ${{ secrets.CYPRESS_RECORD_KEY && env.CYPRESS_BUILD_ID }} # zizmor: ignore[secrets-outside-env]
-          tag: ${{ secrets.CYPRESS_RECORD_KEY && github.event_name }} # zizmor: ignore[secrets-outside-env]
+          ci-build-id: ${{ secrets.CYPRESS_RECORD_KEY && env.CYPRESS_BUILD_ID }}
+          tag: ${{ secrets.CYPRESS_RECORD_KEY && github.event_name }}
         env:
           # Needs to be prefixed with CYPRESS_
           CYPRESS_BRANCH: ${{ env.BRANCH }}
@@ -125,7 +125,7 @@ jobs:
           # Needed for some specific code workarounds
           TESTING: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # zizmor: ignore[secrets-outside-env]
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           CYPRESS_BUILD_ID: ${{ github.sha }}-${{ github.run_number }}
           CYPRESS_GROUP: Run ${{ startsWith(matrix.containers, 'component') && 'component' || 'E2E' }}
 
