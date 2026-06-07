@@ -5,7 +5,7 @@
 
 # AI Contribution Policy
 
-This document provides guidance for AI tools and developers using AI assistance when contributing to Nextcloud. It applies to all repositories under the [Nextcloud GitHub organization](https://github.com/nextcloud/), including the server, clients, apps, and the community app ecosystem.
+This document provides guidance for AI tools and developers using AI assistance when contributing to Nextcloud. It applies to all repositories under the [Nextcloud GitHub organization](https://github.com/nextcloud/) and the [Nextcloud Libraries GitHub organization](https://github.com/nextcloud-libraries/), including the server, clients, apps, and the community app ecosystem.
 
 This policy complements the existing [Contribution Guidelines](CONTRIBUTING.md). The requirements around testing, the Developer Certificate of Origin, license headers, and security reporting described there continue to apply in full - this document addresses how they extend to AI-assisted contributions.
 
