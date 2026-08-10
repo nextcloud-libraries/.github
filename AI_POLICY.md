@@ -66,11 +66,15 @@ The applicable test has three parts: the AI tool's terms must permit open-source
 
 ### Code Quality and Cleanup
 
-AI output must be cleaned before submission. Dead code, redundant logic, excessive comments, inconsistent style, unused variables, structural drift, and unrelated file changes must all be removed. Submitting large AI code blobs without meaningful oversight - sometimes called "vibe coding" or "prompt dumping" - is prohibited.
+AI output must be cleaned before submission. Dead code, redundant logic, excessive comments, inconsistent style, unused variables, malformed or garbled characters, structural drift, and unrelated file changes must all be removed. Submitting large AI code blobs without meaningful oversight - sometimes called "vibe coding" or "prompt dumping" - is prohibited.
+
+Code comments must document the code itself - behavior, signatures, and constraints the code cannot express - never the process that produced it. Progress notes, decision records, and change descriptions ("changed X to Y", "as requested", "this fixes ...") belong in the commit message or PR discussion; in code they go stale and become misleading. Comments must stay brief and match the comment density of the surrounding code, and self-explanatory code needs no comment at all.
+
+Duplicated logic is a further common sign of unreviewed AI output: existing helpers and utilities must be reused instead of re-implemented, and when a flawed pattern is corrected, every occurrence of it must be fixed - not only the one a reviewer happened to point out.
 
 Signs of a disallowed submission include: large unreviewed AI blobs; obvious mechanical mistakes a human would fix in minutes; code that has clearly never been executed; and pull requests that shift debugging and cleanup work onto maintainers rather than the contributor. As required by the [Contribution Guidelines](CONTRIBUTING.md), all changed and added code must be unit tested - AI-generated code is not exempt from this requirement.
 
-New features must be tested on a live Nextcloud instance by the contributor before submission. Providing test instructions for an AI agent to execute is not a substitute for human testing.
+New features must be tested on a live Nextcloud instance by the contributor before submission, and in every context in which they are reachable - not only the default authenticated view, but also public share links, embedded contexts such as the Smart Picker and reference widgets, and other entry points the app supports. AI-generated changes frequently work in the primary view while silently failing in secondary ones. Providing test instructions for an AI agent to execute is not a substitute for human testing.
 
 ---
 
