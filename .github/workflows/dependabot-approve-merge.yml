@@ -1,6 +1,6 @@
 # This workflow is provided via the organization template repository
 #
-# https://github.com/nextcloud/.github
+# https://github.com/nextcloud-libraries/.github
 # https://docs.github.com/en/actions/learn-github-actions/sharing-workflows-with-your-organization
 #
 # SPDX-FileCopyrightText: Nextcloud GmbH and Nextcloud contributors
@@ -24,8 +24,8 @@ concurrency:
 
 jobs:
   auto-approve-merge:
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
-    runs-on: ubuntu-latest-low
+    if: github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'renovate[bot]'
+    runs-on: ubuntu-latest
     env:
       # env variable for maintainers: 'true' allows to auto-merge 1.0.2 -> 2.0.0
       ALLOW_MAJOR: false
